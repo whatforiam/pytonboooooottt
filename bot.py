@@ -28,7 +28,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-TOKEN = "8092406315:AAGXA-LCSnlNa_z6muk37ZJwX72V7pLQ3mM"
+TOKEN = "8593532481:AAFyVJzZt5WxWvT_EW9GCoPlmRxqpml2ukQ"
 
 CHAR_MAP = {
     'а': ['а', 'a', '@', '4', '#'],
@@ -158,5 +158,3 @@ if __name__ == "__main__":
     app = Application.builder().token(TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, delete_messages))
     app.run_polling()
-
-
