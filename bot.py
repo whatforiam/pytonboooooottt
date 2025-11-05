@@ -1,3 +1,21 @@
+import subprocess
+import sys
+
+def install_package(package_name):
+    """Устанавливает пакет через pip."""
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
+
+# Проверяем и устанавливаем необходимые библиотеки
+required_packages = ["python-telegram-bot"]
+
+for package in required_packages:
+    try:
+        __import__(package.replace("-", "_"))
+    except ImportError:
+        print(f"Устанавливается пакет: {package}...")
+        install_package(package)
+
+# Далее стандартный код с импортами и логикой
 import logging
 import re
 from telegram import Update
@@ -12,7 +30,6 @@ logger = logging.getLogger(__name__)
 
 TOKEN = "8092406315:AAGXA-LCSnlNa_z6muk37ZJwX72V7pLQ3mM"
 
-# Словарь замен для русских и английских символов
 CHAR_MAP = {
     'а': ['а', 'a', '@', '4', '#'],
     'б': ['б', '6', 'b', '#'],
@@ -78,181 +95,31 @@ CHAR_MAP = {
     '@': ['а', '@', '#'],
 }
 
-
-# Список обычных слов для блокировки
 BASIC_WORDS = [
-    "хуй",
-    "пизда",
-    "ебать",
-    "сука",
-    "пидор",
-    "xyйня",
-    "бля",
-    "блять",
-    "блядь",
-    "отъебись",
-    "ахуел",
-    "заебал",
-    "долбоёб",
-    "Залупа",к
-    "манда",
-    "еблан",
-    "ебло",
-    "блядь",
-    "гандон",
-    "мудила",
-    "пиздец",
-    "чмо",
-    "сволочь",
-    "пидрас",
-    "пидорас",
-    "уёбище",
-    "шлюха",
-    "хуесос",
-    "тварь",
-    "блядина",
-    "ебучий",
-    "поебень",
-    "мудозвон",
-    "хуйло",
-    "ебаный",
-    "охуел",
-    "пиздатый",
-    "хуевина",
-    "уёбок",
-    "хер",
-    "ёб",
-    "хулиган",
-    "сукин сын",
-    "ублюдок",
-    "гнида",
-    "выблядок",
-    "скотина",
-    "козёл",
-    "баран",
-    "осёл",
-    "fuck",
-    "shit",
-    "bitch",
-    "asshole",
-    "dick",
-    "bastard",
-    "douchebag",
-    "cunt",
-    "faggot",
-    "motherfucker",
-    "prick",
-    "wanker",
-    "twat",
-    "arsehole",
-    "bollocks",
-    "bloody hell",
-    "damn",
-    "hell",
-    "ass",
-    "cock",
-    "pussy",
-    "tit",
-    "fart",
-    "crap",
-    "piss",
-    "arse",
-    "git",
-    "pillock",
-    "tosser",
-    "knob",
-    "plonker",
-    "numpty",
-    "eejit",
-    "gobshite",
-    "feck",
-    "shite",
-    "fucktard",
-    "shitstain",
-    "clusterfuck",
-    "scheiße",
-    "arschloch",
-    "fotze",
-    "wichser",
-    "hurensohn",
-    "mistkerl",
-    "saukerl",
-    "drecksau",
-    "drecksloch",
-    "trottel",
-    "blödmann",
-    "pisser",
-    "schwanzlutscher",
-    "möchtegern",
-    "tölpel",
-    "putain",
-    "merde",
-    "connard",
-    "salope",
-    "enculé",
-    "déchet",
-    "con",
-    "débile",
-    "abruti",
-    "fumier",
-    "salaud",
-    "imbécile",
-    "pourri",
-    "pourrave",
-    "clochardise",
-    "puta",
-    "mierda",
-    "coño",
-    "gilipollas",
-    "pendejo",
-    "cabrón",
-    "puto",
-    "baboso",
-    "idiota",
-    "imbécil",
-    "estúpido",
-    "mamon",
-    "hijo de puta",
-    "chingada",
-    "ojete",
-    "cazzo",
-    "stronzo",
-    "figa",
-    "vaffanculo",
-    "merda",
-    "troia",
-    "bastardo",
-    "porco",
-    "deficiente",
-    "testa di cazzo",
-    "kurwa",
-    "gówno",
-    "dupek",
-    "frajer",
-    "pierdol",
-    "chuj",
-    "rzach",
-    "puta",
-    "merda",
-    "caralho",
-    "cacete",
-    "bostas",
-    "klootzak",
-    "kutje",
-    "godverdomme",
-    "kanker",
-    "tyfus",
-    "tering",
-    "jävla",
-    "helvete",
-    "skit",
-    "ditt",
-    "σκατά",
-    "μαλάκα",
-    "κόλε",
-    "sikeyim",
-    "orospu",
-    "siktir",
+    "хуй", "пизда", "ебать", "сука", "пидор", "xyйня", "бля", "блять", 
+    "блядь", "отъебись", "ахуел", "заебал", "долбоёб", "Залупа", "манда", 
+    "еблан", "ебло", "блядь", "гандон", "мудила", "пиздец", "чмо", "сволочь", 
+    "пидрас", "пидорас", "уёбище", "шлюха", "хуесос", "тварь", "блядина", 
+    "ебучий", "поебень", "мудозвон", "хуйло", "ебаный", "охуел", "пиздатый", 
+    "хуевина", "уёбок", "хер", "ёб", "хулиган", "сукин сын", "ублюдок", "гнида", 
+    "выблядок", "скотина", "козёл", "баран", "осёл", "fuck", "shit", "bitch", 
+    "asshole", "dick", "bastard", "douchebag", "cunt", "faggot", "motherfucker", 
+    "prick", "wanker", "twat", "arsehole", "bollocks", "bloody hell", "damn", 
+    "hell", "ass", "cock", "pussy", "tit", "fart", "crap", "piss", "arse", "git", 
+    "pillock", "tosser", "knob", "plonker", "numpty", "eejit", "gobshite", "feck", 
+    "shite", "fucktard", "shitstain", "clusterfuck", "scheiße", "arschloch", 
+    "fotze", "wichser", "hurensohn", "mistkerl", "saukerl", "drecksau", 
+    "drecksloch", "trottel", "blödmann", "pisser", "schwanzlutscher", "möchtegern", 
+    "tölpel", "putain", "merde", "connard", "salope", "enculé", "déchet", "con", 
+    "débile", "abruti", "fumier", "salaud", "imbécile", "pourri", "pourrave", 
+    "clochardise", "puta", "mierda", "coño", "gilipollas", "pendejo", "cabrón", 
+    "puto", "baboso", "idiota", "imbécil", "estúpido", "mamon", "hijo de puta", 
+    "chingada", "ojete", "cazzo", "stronzo", "figa", "vaffanculo", "merda", 
+    "troia", "bastardo", "porco", "deficiente", "testa di cazzo", "kurwa", "gówno", 
+    "dupek", "frajer", "pierdol", "chuj", "rzach", "puta", "merda", "caralho", 
+    "cacete", "bostas", "klootzak", "kutje", "godverdomme", "kanker", "tyfus", 
+    "tering", "jävla", "helvete", "skit", "ditt", "σκατά", "μαλάκα", "κόλε", 
+    "sikeyim", "orospu", "siktir",
 ]
 
 
@@ -260,21 +127,14 @@ def convert_word_to_regex(word):
     """Конвертирует обычное слово в регулярное выражение с альтернативными символами"""
     pattern_parts = []
     for char in word.lower():
-        # Получаем все возможные варианты для символа
         replacements = CHAR_MAP.get(char, [char])
-        # Собираем уникальные варианты без дубликатов
         unique_chars = list(set(replacements))
-        # Создаем группу символов
         pattern_parts.append(f'[{"".join(unique_chars)}]')
-    
-    # Учитываем возможные знаки препинания в конце
     return ''.join(pattern_parts) + r'[\W_]*'
 
-# Генерируем все паттерны
 PATTERNS = [convert_word_to_regex(word) for word in BASIC_WORDS]
 compiled_patterns = [re.compile(pattern, re.IGNORECASE | re.UNICODE) for pattern in PATTERNS]
 
-# Для дебага
 logger.info(f"Generated patterns: {PATTERNS}")
 
 async def delete_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -295,7 +155,6 @@ async def delete_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             break
 
 if __name__ == "__main__":
-    # Запуск бота
     app = Application.builder().token(TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, delete_messages))
     app.run_polling()
